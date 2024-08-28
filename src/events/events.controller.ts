@@ -4,12 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
+import { Prisma } from '@prisma/client';
 import { CreateEventDto } from './dto/create.dto';
-import { UpdateEventDto } from './dto/update.dto';
 
 @Controller('events')
 export class EventsController {
@@ -21,17 +23,17 @@ export class EventsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.eventsService.findOne(id);
   }
 
   @Post()
-  create(@Body() data: CreateEventDto) {
+  create(@Body(ValidationPipe) data: CreateEventDto) {
     return this.eventsService.create(data);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: UpdateEventDto) {
+  update(@Param('id') id: string, @Body() data: Prisma.EventUpdateInput) {
     return this.eventsService.update(id, data);
   }
 
